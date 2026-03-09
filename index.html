@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fort Collins River Level / Streamflow Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-content">
+        <div class="branding">
+          <span class="logo-mark">FC</span>
+          <div class="brand-text">
+            <h1>Fort Collins River Level / Streamflow Dashboard</h1>
+            <p class="subtitle">Monitoring the Cache la Poudre River</p>
+          </div>
+        </div>
+        <nav class="main-nav">
+          <a href="#overview">Overview</a>
+          <a href="#dashboard">Dashboard</a>
+          <a href="#about">Why It Matters</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section id="overview" class="hero">
+        <div class="container hero-content">
+          <div class="hero-text">
+            <h2>Real-time insight into local river conditions</h2>
+            <p>
+              Streamflow and river levels influence flood risk, drought impacts,
+              and the overall health of aquatic ecosystems in and around
+              Fort Collins. This dashboard provides a clear starting point for
+              exploring how the Cache la Poudre River is behaving today.
+            </p>
+            <div class="hero-highlights">
+              <div class="highlight-card">
+                <h3>Flood Risk</h3>
+                <p>
+                  Elevated river levels can quickly increase flood risk,
+                  threatening neighborhoods, infrastructure, and trails along
+                  the river corridor.
+                </p>
+              </div>
+              <div class="highlight-card">
+                <h3>Drought Monitoring</h3>
+                <p>
+                  Low streamflows signal potential drought stress, affecting
+                  water supply, agriculture, and overall watershed resilience.
+                </p>
+              </div>
+              <div class="highlight-card">
+                <h3>Ecosystem Health</h3>
+                <p>
+                  Stable, healthy flows support fish, wildlife, riparian
+                  vegetation, and the recreational value of the river.
+                </p>
+              </div>
+            </div>
+          </div>
+          <aside class="hero-side-panel">
+            <div class="status-card">
+              <h3>Today's Snapshot</h3>
+              <p class="status-label">Streamflow status</p>
+              <p class="status-value" id="status-streamflow">Loading...</p>
+              <p class="status-note">
+                A simple summary of current river conditions will appear here
+                once data connections are added in the next step.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="dashboard" class="dashboard-section">
+        <div class="container">
+          <header class="section-header">
+            <h2>Main Dashboard</h2>
+            <p>
+              This section will host interactive charts and visualizations of
+              river level and streamflow data for Fort Collins.
+            </p>
+          </header>
+
+          <div class="dashboard-grid">
+            <div class="panel placeholder-panel streamflow-panel">
+              <header class="panel-header">
+                <div>
+                  <h3>Daily Streamflow (Last <span id="chart-period">90</span> Days)</h3>
+                  <p class="panel-subtitle">
+                    Mock data representing recent daily discharge in the Cache
+                    la Poudre River near Fort Collins.
+                  </p>
+                </div>
+              </header>
+              <div class="station-control">
+                <label for="station-select" class="threshold-label">
+                  Station
+                </label>
+                <select id="station-select" class="time-range-select">
+                  <option value="poudre" selected>Cache la Poudre (Fort Collins)</option>
+                  <option value="bigthompson">Big Thompson (Loveland)</option>
+                  <option value="stvrain">St. Vrain (Longmont)</option>
+                </select>
+              </div>
+              <div class="time-range-control">
+                <label for="time-range-select" class="threshold-label">
+                  Time range
+                </label>
+                <select id="time-range-select" class="time-range-select">
+                  <option value="30">Last 30 days</option>
+                  <option value="60">Last 60 days</option>
+                  <option value="90" selected>Last 90 days</option>
+                </select>
+              </div>
+              <div class="threshold-control">
+                <label for="threshold-slider" class="threshold-label">
+                  <span>
+                    Flood Watch Threshold (cfs):
+                    <span id="threshold-value">400</span>
+                  </span>
+                </label>
+                <input
+                  id="threshold-slider"
+                  type="range"
+                  min="100"
+                  max="700"
+                  step="10"
+                  value="400"
+                />
+                <p class="threshold-helper">
+                  Values above threshold may indicate elevated flow conditions.
+                </p>
+              </div>
+              <div class="moving-avg-control">
+                <label class="toggle-label" for="moving-avg-toggle">
+                  Show 7-day moving average
+                </label>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="moving-avg-toggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="chart-wrapper">
+                <div class="y-axis-label">Streamflow (cfs)</div>
+                <div class="chart-inner">
+                  <canvas id="streamflow-chart"></canvas>
+                  <div id="chart-legend" class="chart-legend" aria-hidden="true"></div>
+                  <div id="chart-tooltip" class="chart-tooltip" aria-hidden="true"></div>
+                </div>
+              </div>
+              <div class="data-notes">
+                <h4 class="data-notes-title">Data Notes</h4>
+                <p class="data-notes-text">
+                  This dashboard uses <strong>mock/synthetic data</strong> for an
+                  educational prototype. Future version: USGS station ID
+                  <span id="data-notes-station">—</span>;
+                  data source: <span id="data-notes-source">—</span>.
+                </p>
+                <button type="button" id="download-csv-btn" class="download-csv-btn">
+                  Download CSV
+                </button>
+              </div>
+            </div>
+            <div class="panel info-panel">
+              <h3>Key Indicators</h3>
+              <ul class="indicator-list">
+                <li>
+                  <span class="indicator-label">Current flow:</span>
+                  <span class="indicator-value" id="indicator-current-flow">—</span>
+                </li>
+                <li>
+                  <span class="indicator-label">Historical average:</span>
+                  <span class="indicator-value" id="indicator-historical-average">—</span>
+                </li>
+                <li>
+                  <span class="indicator-label">Max flow (<span id="indicator-period">90</span>-day):</span>
+                  <span class="indicator-value" id="indicator-max-flow">—</span>
+                </li>
+                <li>
+                  <span class="indicator-label">Current percentile (<span id="indicator-period-percentile">90</span>-day):</span>
+                  <span class="indicator-value" id="indicator-current-percentile">—</span>
+                </li>
+              </ul>
+              <div id="flow-bar-container" class="flow-bar-container" aria-hidden="true"></div>
+              <p class="panel-note">
+                These summary indicators help quickly assess whether conditions
+                are typical, unusually high, or unusually low for this time of
+                year.
+              </p>
+            </div>
+            <div class="panel events-panel">
+              <h3>High-flow Events</h3>
+              <div id="high-flow-events" class="events-list">
+                <p class="panel-note">Loading…</p>
+              </div>
+            </div>
+          </div>
+          <div class="panel ai-panel">
+            <h3>AI Summary</h3>
+            <p id="ai-summary-text" class="ai-summary-text">
+              Loading AI summary from mock data&hellip;
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="info-section">
+        <div class="container two-column">
+          <div>
+            <h2>Why monitor streamflow in Fort Collins?</h2>
+            <p>
+              The Cache la Poudre River is central to Fort Collins&apos; water
+              supply, recreation, and ecological integrity. Understanding how
+              the river&apos;s flow changes seasonally and during storms helps
+              planners, engineers, and residents make informed decisions.
+            </p>
+          </div>
+          <div class="info-cards">
+            <div class="info-card">
+              <h3>Community Safety</h3>
+              <p>
+                Tracking rapid rises in water level improves early warning for
+                flash floods and supports safe management of river-adjacent
+                infrastructure.
+              </p>
+            </div>
+            <div class="info-card">
+              <h3>Water Management</h3>
+              <p>
+                Streamflow data informs reservoir operations, diversions, and
+                conservation strategies, especially during drought conditions.
+              </p>
+            </div>
+            <div class="info-card">
+              <h3>Environmental Stewardship</h3>
+              <p>
+                Consistent monitoring supports habitat protection, restoration
+                projects, and long-term climate resilience planning.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <p>
+          Fort Collins River Level / Streamflow Dashboard &middot; Educational
+          prototype for environmental monitoring
+        </p>
+        <p class="footer-meta">
+          Data sources and live connections will be integrated in a future
+          step.
+        </p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
